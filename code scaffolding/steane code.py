@@ -9,16 +9,19 @@
    },
    "outputs": [],
    "source": [
-    "class Simulator:\n",
+    "class Steane:\n",
     "\n",
-    "    def run(self, circuit):\n",
-    "        \"\"\"runs the specific chosen circuit\"\"\"\n",
+    "    def stabilizers(self):\n",
+    "        \"\"\"returns the steane stabilizer generator\"\"\"\n",
+    "        pass\n",
     "\n",
-    "    def run_data(self, circuit, repetitions):\n",
-    "        \"\"\"collecting the data from the run\"\"\"\n",
+    "    def decode(syndrome):\n",
+    "        \"\"\"takes in the measured syndrome returns which corrections needs to be applied to which qubit\"\"\"\n",
+    "        pass\n",
     "\n",
-    "    def detector_occurances(results):\n",
-    "        \"\"\"gives the detector information (flag, syndrome, etc)\"\"\""
+    "    def correctable(self, error):\n",
+    "        \"\"\"is the error fixable by steane code or not?\"\"\"\n",
+    "        pass"
    ]
   }
  ],
