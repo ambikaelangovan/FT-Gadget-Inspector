@@ -32,7 +32,10 @@ def main():
     #build the flag circuit
     flag_circuit = builder.flag_circuit()
     print("\nFlag-qubit circuit:")
-    print(flag_circuit)
+    if flag_circuit is None:
+        print("Flag circuit not implemented yet.")
+    else:
+        print(flag_circuit)
 
         
     # validate fault-free baseline - check if syndrome is correct at initaization since the logical state is in |0>, the syndrome should be 0
