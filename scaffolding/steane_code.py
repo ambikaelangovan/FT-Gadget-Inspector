@@ -7,7 +7,7 @@ class Steane:
         }
 
 
-    def stabilizers(self):
+    def get_stabilizers(self):
         "returns the steane stabilizer generator, form of a dictionary"
         return self.stabilizers
 
@@ -39,12 +39,17 @@ class Steane:
             return True
 
         if not isinstance(error, dict):
-            raise TypeError("Invalid syndrome: must be a dictionary")
+            raise TypeError("Invalid erorr: must be a dictionary")
 
-        qubit = error.get("qubit")
+        if "qubits" in error:
+            qubits = error.get("qubits")
+            if qubits is None:
+                qubits = []
+        else:
+            qubit = error.get("qubits")
+            qubits = [qubit] if qubit is not None else []
 
-        if qubit is not None and 0<=qubit<=6 :
-            return True
+        if not all(isinstance(q, int) and 0<= q<=6 for q in qubits):
+            raise ValueError("Invalid error: qubits must be integer from 0 to 6")
 
-        return False
-    
+        return len(qubits) <=1
