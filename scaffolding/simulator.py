@@ -1,13 +1,27 @@
-class Simulator:
+import cirq
 
-    def run(self, circuit):
+
+class Simulator:
+#executes the circuit and collects the data
+    def __init__(self):
+        self.simulator = cirq.Simulator()
+
+    def run(self, circuit, repetitions=1000):
         """runs the specific chosen circuit"""
-        pass
+        return self.simulator.run(
+            circuit,
+            repetitions=repetitions,
+        )
 
     def run_data(self, circuit, repetitions):
         """collecting the data from the run"""
-        pass
+        result = self.run(
+            circuit,
+            repetitions=repetitions,
+        )
 
-    def detector_occurances(results):
+        return result.measurements
+
+    def detector_occurrences(self, results):
         """gives the detector information (flag, syndrome, etc)"""
         pass
