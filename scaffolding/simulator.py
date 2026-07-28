@@ -24,4 +24,17 @@ class Simulator:
 
     def detector_occurrences(self, results):
         """gives the detector information (flag, syndrome, etc)"""
-        pass
+
+        occurances = {}
+
+        for key, measurements in results.items():
+            total = len(measurements)
+            triggered = sum(1 for measurement in measurements if int(measurement[0]) == 1)
+
+            occurances[key] = {
+                "total": total,
+                "triggered": triggered,
+                "rate" : (triggered/ total) if total else 0
+            }
+
+        return occurances
