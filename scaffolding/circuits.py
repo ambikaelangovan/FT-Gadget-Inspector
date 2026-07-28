@@ -32,7 +32,16 @@ class CircuitCreation:
 
         return circuit
 
-    def flag_circuits(self):
+    def prepare_clean_state(self):
+        """Prepare the data qubits for a clean X-stabilizer test."""
+        circuit = cirq.Circuit()
+
+        for index in self.stabilizer_support:
+            circuit.append(cirq.H(self.q[index]))
+
+        return circuit
+    
+    def flag_circuit(self):
         """flag-qubit stabilizer measurement circuit"""
         raise NotImplementedError(
             "Flag circuit will be added after confirming the circuit diagram."

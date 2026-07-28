@@ -1,10 +1,11 @@
+import cirq
 # only need to run this file
 # connects to other files with circuits, simulations, data
 
 from circuits import CircuitCreation
 from faults import FaultInjection
 from simulator import Simulator
-from steane_code import SteaneCode
+from steane_code import Steane
 from analysis import FaultAnalysis, Visualization
 
 def main():
@@ -16,8 +17,11 @@ def main():
     visualizer = Visualization()
     
     #display selected stabilizer
+    stabilizer_type = builder.stabilizer_type
+    stabilizer_support = builder.stabilizer_support
     stabilizer_name = " ".join(
-    f"{stabilizer_type}{q}" for q in stabilizer_support
+        f"{stabilizer_type}{q}" for q in stabilizer_support
+
     )
 
     print("\nSelected stabilizer:", stabilizer_name)
@@ -27,21 +31,37 @@ def main():
     #building the baseline circuit
     baseline_circuit = builder.baseline_circuit()
     print("Baseline circuit:")
-    print(baseline, "\n")
+    print(baseline_circuit, "\n")
 
     #build the flag circuit
-    flag_circuit = builder.flag_circuit()
-    print("\nFlag-qubit circuit:")
-    if flag_circuit is None:
-        print("Flag circuit not implemented yet.")
-    else:
-        print(flag_circuit)
+    try:
+        flag_circuit = builder.flag_circuit()
+    except NotImplementedError:
+        flag_circuit = None
 
         
-    # validate fault-free baseline - check if syndrome is correct at initaization since the logical state is in |0>, the syndrome should be 0
-    check = builder.encode_logical_zero() + baseline
-    bits = sim.measurement_bits(check, repetitions=200)
-    print("syndrome on clean logical |0>:", set(bits["syndrome"]), "(must be {0})\n")
+    # validate fault-free baseline - check if the syndrome is correct for the prepared clean test state
+    # Check the baseline circuit before injecting faults.
+    clean_state = builder.prepare_clean_state()
+    clean_circuit = clean_state + baseline_circuit
+
+    clean_result = simulator.run_data(
+        clean_circuit,
+        repetitions=200,
+    )
+
+    clean_syndrome = {
+        int(measurement[0])
+        for measurement in clean_result["syndrome"]
+    }
+
+    print("Clean syndrome:", clean_syndrome)
+    print("Expected syndrome: {0}")
+
+    if clean_syndrome == {0}:
+         print("Baseline circuit passed the clean-state check.")
+    else:
+         print("Baseline circuit produced the wrong clean syndrome.")
 
     #find baseline fault locations - places to insert faults 
     baseline_locations = injector.fault_locations(
@@ -135,6 +155,7 @@ def main():
             "\nComparison skipped because the flag circuit "
             "Flag circuit is not implemented yet."
         )
+
     #create the summary chart
     summaries = [baseline_summary]
     labels = ["Baseline"]
@@ -153,4 +174,3 @@ def main():
 #run main() only when this file is executed directly.
 if __name__ == "__main__":
     main()
-
