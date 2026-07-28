@@ -36,10 +36,26 @@ class CircuitCreation:
         """Prepare the data qubits for a clean X-stabilizer test."""
         circuit = cirq.Circuit()
 
-        for index in self.stabilizer_support:
+        data_qubits = [2,4,5,6]
+        for index in data_qubits:
             circuit.append(cirq.H(self.q[index]))
 
+        circuit.append(cirq.CNOT(self.q[2], self.q[0]))
+        circuit.append(cirq.CNOT(self.q[4], self.q[0]))
+        circuit.append(cirq.CNOT(self.q[6], self.q[0]))
+
+        circuit.append(cirq.CNOT(self.q[2], self.q[1]))
+        circuit.append(cirq.CNOT(self.q[5], self.q[1]))
+        circuit.append(cirq.CNOT(self.q[6], self.q[1]))
+
+        circuit.append(cirq.CNOT(self.q[4], self.q[3]))
+        circuit.append(cirq.CNOT(self.q[5], self.q[3]))
+        circuit.append(cirq.CNOT(self.q[6], self.q[3]))
+
         return circuit
+
+
+
     
     def flag_circuit(self):
         """flag-qubit stabilizer measurement circuit"""
