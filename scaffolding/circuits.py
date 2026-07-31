@@ -59,9 +59,34 @@ class CircuitCreation:
     
     def flag_circuit(self):
         """flag-qubit stabilizer measurement circuit"""
-        raise NotImplementedError(
-            "Flag circuit will be added after confirming the circuit diagram."
-        )
+        circuit = cirq.Circuit()
+        support = self.stabilizer_support
+
+        # prepare the syndrome ancilla in the |+> state
+        # (the flag qubit starts in |0> with no gate needed)
+        circuit.append(cirq.H(self.syndrome))
+
+        # open the flag window right after preparation
+        circuit.append(cirq.CNOT(self.syndrome, self.flag))
+
+        # the first three data qubits, inside the flag window
+        circuit.append(cirq.CNOT(self.syndrome, self.q[support[0]]))
+        circuit.append(cirq.CNOT(self.syndrome, self.q[support[1]]))
+        circuit.append(cirq.CNOT(self.syndrome, self.q[support[2]]))
+
+        # close the flag window just before the last data CNOT
+        circuit.append(cirq.CNOT(self.syndrome, self.flag))
+
+        # last data qubit, after the flag window closes
+        circuit.append(cirq.CNOT(self.syndrome, self.q[support[3]]))
+
+        # return the syndrome ancilla to the Z basis
+        circuit.append(cirq.H(self.syndrome))
+
+        circuit.append(cirq.measure(self.syndrome, key="syndrome"))
+        circuit.append(cirq.measure(self.flag, key="flag"))
+
+        return circuit
 
 
     def get_circuit(self, circuit_type):
