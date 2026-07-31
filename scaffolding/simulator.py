@@ -2,8 +2,10 @@ import cirq
 
 
 class Simulator:
-#executes the circuit and collects the data
+    """runs circuits and collects measurements"""
+
     def __init__(self):
+        """creating underlying cirq.Simulator instance"""
         self.simulator = cirq.Simulator()
 
     def run(self, circuit, repetitions=1000):

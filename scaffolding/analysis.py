@@ -5,6 +5,9 @@ matplotlib.use("Agg")
 import numpy as np
 
 class FaultAnalysis:
+    """injects pauli faults throughout the syndrome-extraction circuit,
+    classifies the error on each run
+    summary across all runs"""
 
     #distance-3 codes correct one single data qubit error
     CORRECTABLE_WEIGHT = 1
@@ -90,8 +93,10 @@ class FaultAnalysis:
             "extra_gates": flagged_gates - baseline_gates,
         }
 
+
     def summary(self, results):
-        """ would include the total number of faults, correctable faults, non correctable faults; in the form of percentages"""
+        """total number of faults, correctable faults, non correctable faults;
+        in the form of percentages"""
         counts = {"correctable": 0, "detected_by_flag": 0, "not_correctable": 0}
         for result in results:
             counts[result["classification"]] += 1
@@ -109,6 +114,10 @@ class FaultAnalysis:
 
 
 class Visualization:
+    """turns the summaries and circuits into tables and figures
+    includes results,
+    qubit/gate overheads,
+    text table"""
 
     def plot_fault_summary(self, summaries, labels, save_path="fault_summary.png"):
         """takes in the percentages and outputs a bar chart"""
@@ -127,12 +136,12 @@ class Visualization:
         ax.set_title("Fault outcome comparison")
         ax.legend()
         fig.tight_layout()
-        # fig.savefig(save_path)
+        fig.savefig(save_path)
         plt.close(fig)
         return save_path
 
     def plot_overhead(self, baseline, flagged, save_path="overhead_comparison.png"):
-        """ bar graph of the extra qubits and gates required"""
+        """ bar graph comparing qubit/gate overhead between baseline and flag circuit"""
         categories = ["Qubits", "Gates"]
         baseline_values = [len(baseline.all_qubits()), len(list(baseline.all_operations()))]
         flagged_values = [len(flagged.all_qubits()), len(list(flagged.all_operations()))]

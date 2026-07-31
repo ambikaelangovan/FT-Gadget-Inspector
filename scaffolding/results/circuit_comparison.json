@@ -1,0 +1,18 @@
+{
+  "baseline_percent": {
+    "correctable": 80.0,
+    "detected_by_flag": 0.0,
+    "not_correctable": 20.0
+  },
+  "flagged_percent": {
+    "correctable": 66.66666666666666,
+    "detected_by_flag": 28.57142857142857,
+    "not_correctable": 4.761904761904762
+  },
+  "baseline_qubits": 5,
+  "flagged_qubits": 6,
+  "baseline_gates": 7,
+  "flagged_gates": 10,
+  "extra_qubits": 1,
+  "extra_gates": 3
+}

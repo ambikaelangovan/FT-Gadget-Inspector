@@ -1,4 +1,6 @@
 class Steane:
+    """the [[7,1,3]] steane code stabilizer generator,
+    simple syndrome decoding and if the error is correctable"""
 
     def __init__(self):
         "initializing the steane stabilizer generators"
@@ -11,8 +13,9 @@ class Steane:
         "returns the steane stabilizer generator, form of a dictionary"
         return self.stabilizers
 
+
     def decode(self, syndrome):
-        "takes in the measured syndrome returns which corrections needs to be applied to which qubit"\
+        "takes in the measured syndrome returns which corrections needs to be applied to which qubit"
 
         if syndrome == 0:
             return {

@@ -1,7 +1,11 @@
 import cirq
 class CircuitCreation:
+    """building the baseline circuit and flag-qubit circuit for one X-stabilizer of the steane code.
+    clean data-qubit state preparation for validation"""
     
     def __init__(self):
+        """setting up the 7 data qubits, syndrome ancilla, and flag ancilla,
+        record whcih stabilizer generator is being measured"""
         self.q = cirq.LineQubit.range(7)
         self.syndrome = cirq.LineQubit(7)
         self.flag = cirq.LineQubit(8)

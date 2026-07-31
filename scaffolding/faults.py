@@ -1,6 +1,9 @@
 import cirq
 
 class FaultInjection:
+    """finds possible fault locations in the circuit,
+    inserts sigle-qubit puali faults,
+    propogates the fault's effects forwards to see which qubits it affects"""
 
     PAULI_GATES = {"X": cirq.X, "Y": cirq.Y, "Z": cirq.Z}
 
@@ -21,6 +24,8 @@ class FaultInjection:
         return locations
 
     def inject_faults(self, circuit, location, pauli_fault):
+        """returns a copy of the circuit with a single qubit pauli gate inserted right after the given moment,
+        simulates a physical fault"""
         if pauli_fault not in self.PAULI_GATES:
             raise ValueError("pauli_fault must be 'X', 'Y', or 'Z'")
 
@@ -46,6 +51,9 @@ class FaultInjection:
 
 
     def propagate_fault(self, circuit, location, pauli_fault):
+        """tracks how single-pauli fault injected propogates forward,
+        uses the heisenberg/sympletic error-frame model,
+        returns dictionary that maps each qubit to pauli label at end of circuit"""
         moment_index, fault_qubit = location
 
         frame = {qubit: self._TO_BITS["I"] for qubit in circuit.all_qubits()}
@@ -61,6 +69,7 @@ class FaultInjection:
 
 
     def _apply_gate(self, op, frame):
+        """updates the error frame in place to show how single clifford oepration transforms error on the qubit"""
         gate = op.gate
         qubits = op.qubits
 
