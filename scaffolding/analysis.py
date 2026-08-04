@@ -122,19 +122,32 @@ class Visualization:
     def plot_fault_summary(self, summaries, labels, save_path="fault_summary.png"):
         """takes in the percentages and outputs a bar chart"""
         categories = ["correctable", "detected_by_flag", "not_correctable"]
+        category_labels = ["Correctable", "Detected\nby flag", "Not\ncorrectable"]
         x = np.arange(len(categories))
         width = 0.8 / max(len(summaries), 1)
 
-        fig, ax = plt.subplots()
+        plt.rcParams.update({
+            "font.size": 13,
+            "axes.labelsize": 13,
+        })
+
+        fig, ax = plt.subplots(figsize=(4.5, 3.4), dpi=200)
+        ax.set_title("Flag qubit catches most faults", fontsize=14, loc='left')
         for i, (summary, label) in enumerate(zip(summaries, labels)):
             values = [summary["percent"][category] for category in categories]
-            ax.bar(x + i * width, values, width, label=label)
+            bars = ax.bar(x + i * width, values, width, label=label)
+            for bar in bars:
+                h = bar.get_height()
+                ax.annotate(f"{h:.0f}%", xy=(bar.get_x() + bar.get_width() / 2, h),
+                            xytext=(0, 3), textcoords="offset points",
+                            ha="center", fontsize=10)
 
         ax.set_xticks(x + width * (len(summaries) - 1) / 2)
-        ax.set_xticklabels(categories)
-        ax.set_ylabel("Percent of injected faults")
-        ax.set_title("Fault outcome comparison")
-        ax.legend()
+        ax.set_xticklabels(category_labels)
+        ax.set_ylabel("% of injected faults")
+        ax.legend(fontsize=11, frameon=False)
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
         fig.tight_layout()
         fig.savefig(save_path)
         plt.close(fig)
@@ -149,14 +162,23 @@ class Visualization:
         x = np.arange(len(categories))
         width = 0.35
 
-        fig, ax = plt.subplots()
-        ax.bar(x - width / 2, baseline_values, width, label="Baseline")
-        ax.bar(x + width / 2, flagged_values, width, label="Flagged")
+        fig, ax = plt.subplots(figsize=(4.0, 3.4), dpi=200)
+        ax.set_title("Overhead of adding the flag qubit", fontsize=14, loc='center')
+        bars1 = ax.bar(x - width / 2, baseline_values, width, label="Baseline")
+        bars2 = ax.bar(x + width / 2, flagged_values, width, label="Flagged")
+        for bars in (bars1, bars2):
+            for bar in bars:
+                h = bar.get_height()
+                ax.annotate(f"{int(h)}", xy=(bar.get_x() + bar.get_width() / 2, h),
+                            xytext=(0, 3), textcoords="offset points",
+                            ha="center", fontsize=11)
+
         ax.set_xticks(x)
         ax.set_xticklabels(categories)
         ax.set_ylabel("Count")
-        ax.set_title("Circuit overhead comparison")
-        ax.legend()
+        ax.legend(fontsize=11, frameon=False)
+        ax.spines["top"].set_visible(False)
+        ax.spines["right"].set_visible(False)
         fig.tight_layout()
         fig.savefig(save_path)
         plt.close(fig)
